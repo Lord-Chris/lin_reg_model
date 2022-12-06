@@ -1,6 +1,7 @@
 /// Example of a combo scatter plot chart with a second series rendered as a
 /// line.
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:charts_flutter_new/flutter.dart';
 import 'package:flutter/material.dart';
 
 class ScatterPlotComboLineChart extends StatelessWidget {
@@ -27,25 +28,14 @@ class ScatterPlotComboLineChart extends StatelessWidget {
       seriesList,
       animate: animate,
       defaultRenderer: charts.PointRendererConfig(),
-      // Custom renderer configuration for the line series.
-      // layoutConfig: charts.LayoutConfig(
-      //   leftMarginSpec: charts.MarginSpec.fromPixel(maxPixel: 5, minPixel: 3),
-      //   topMarginSpec: charts.MarginSpec.fromPixel(maxPixel: 5, minPixel: 3),
-      //   rightMarginSpec: charts.MarginSpec.fromPixel(maxPixel: 5, minPixel: 3),
-      //   bottomMarginSpec: charts.MarginSpec.fromPixel(maxPixel: 5, minPixel: 3),
-      // ),
-      secondaryMeasureAxis:
-          const charts.NumericAxisSpec(viewport: charts.NumericExtents(3, 4)),
-
-      primaryMeasureAxis: charts.NumericAxisSpec(),
+      primaryMeasureAxis: const charts.NumericAxisSpec(
+        tickProviderSpec:
+            charts.BasicNumericTickProviderSpec(desiredTickCount: 1),
+        viewport: charts.NumericExtents(0, 5),
+      ),
       customSeriesRenderers: [
         charts.LineRendererConfig(
-          // ID used to link series to this renderer.
           customRendererId: 'customLine',
-          // Configure the regression line to be painted above the points.
-          //
-          // By default, series drawn by the point renderer are painted on
-          // top of those drawn by a line renderer.
           layoutPaintOrder: charts.LayoutViewPaintOrder.point + 1,
         )
       ],

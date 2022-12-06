@@ -30,7 +30,8 @@ class HomeView extends StatelessWidget {
             onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (_) => const StudentDataView(is10thStudent: true)),
+                builder: (_) => const StudentDataView(is10thStudent: true),
+              ),
             ),
             child: const Center(
               child: Text("View 10th Student's Data"),
@@ -40,7 +41,8 @@ class HomeView extends StatelessWidget {
             onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (_) => const StudentDataView(is10thStudent: false)),
+                builder: (_) => const StudentDataView(is10thStudent: false),
+              ),
             ),
             child: const Center(
               child: Text("View 20th Student's Data"),

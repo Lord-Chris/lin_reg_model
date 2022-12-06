@@ -1,17 +1,16 @@
 import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:ml_algo/ml_algo.dart';
-// import 'package:ml_dataframe/src/data_frame/data_frame.dart';
 import 'package:ml_dataframe/ml_dataframe.dart';
 
 import '../ui/scatter_plot.dart';
-// import 'package:ml_preprocessing/ml_preprocessing.dart';
 
 class CsvUtils {
   CsvUtils._();
   static CsvUtils instance = CsvUtils._();
   List<List<dynamic>> dataset = [];
   List<List<dynamic>> csv = [];
+  List<List<dynamic>> cleanCsv = [];
 
   List courses = [];
   List grades = [];
@@ -57,6 +56,19 @@ class CsvUtils {
     return data;
   }
 
+  List<List<dynamic>> removeUnwantedCourses(
+      List<List<dynamic>> data, bool is10th) {
+    final index10 = [23, 35, 36, 46, 55, 64].reversed.toList();
+    final index20 = [19, 20, 22, 31, 32, 40, 49, 54].reversed.toList();
+    final courses = is10th ? index10 : index20;
+    for (int i = 0; i < courses.length; i++) {
+      print(data[0].elementAt(courses[i]));
+      data[0].removeAt(courses[i]);
+      data[1].removeAt(courses[i]);
+    }
+    return data;
+  }
+
   List<int> getCourseUnits(List courses) {
     final units = courses.map(
       (e) {
@@ -78,19 +90,19 @@ class CsvUtils {
       return [
         for (int i = 0; i < 11; i++) 1,
         for (int i = 0; i < 11; i++) 2,
-        for (int i = 0; i < 12; i++) 3,
-        for (int i = 0; i < 11; i++) 4,
-        for (int i = 0; i < 10; i++) 5,
-        for (int i = 0; i < 12; i++) 6,
+        for (int i = 0; i < 11; i++) 3,
+        for (int i = 0; i < 9; i++) 4,
+        for (int i = 0; i < 9; i++) 5,
+        for (int i = 0; i < 10; i++) 6,
       ].toList();
     } else {
       return [
         for (int i = 0; i < 10; i++) 1,
         for (int i = 0; i < 9; i++) 2,
-        for (int i = 0; i < 11; i++) 3,
-        for (int i = 0; i < 9; i++) 4,
-        for (int i = 0; i < 10; i++) 5,
-        for (int i = 0; i < 9; i++) 6,
+        for (int i = 0; i < 8; i++) 3,
+        for (int i = 0; i < 7; i++) 4,
+        for (int i = 0; i < 9; i++) 5,
+        for (int i = 0; i < 6; i++) 6,
       ].take(59).toList();
     }
   }
@@ -114,7 +126,10 @@ class CsvUtils {
   }
 
   void processCsv(bool is10th) {
-    final tempData = cleanUpData(is10th ? data10 : data20);
+    final tempData = removeUnwantedCourses(
+      cleanUpData(is10th ? data10 : data20),
+      is10th,
+    );
 
     // Set courses and grades to the list
     courses = tempData[0];
@@ -136,7 +151,8 @@ class CsvUtils {
     // Calculate gpa
 
     // 1. Get Points x units
-    for (int i = 0; i < courses.length; i++) {
+    pointsXUnits.clear();
+    for (int i = 0; i < units.length; i++) {
       pointsXUnits.add(units[i] * points[i]);
     }
 
@@ -162,7 +178,6 @@ class CsvUtils {
     for (int i = 0; i < unitsPerSem.length; i++) {
       gpas.add(pxuPerSem[i] / unitsPerSem[i]);
     }
-    // print(gpas);
 
     // Calculate CGPA
     cgpas.clear();
@@ -178,7 +193,15 @@ class CsvUtils {
     print(cgpas);
 
     // Compile Result
-    csv = [courses, grades, units, semester, points, pointsXUnits];
+    csv = [
+      // ["Index", ...courses.map((e) => courses.indexOf(e)).toList()],
+      ["Courses", ...courses],
+      ["Grades", ...grades],
+      ["Units", ...units],
+      ["Semester", ...semester],
+      ["Points", ...points],
+      ["Points X Units", ...pointsXUnits]
+    ];
   }
 
   double predictCGPA(bool is10th, int semester) {
@@ -189,10 +212,8 @@ class CsvUtils {
     }
     final tempCGPA = [...cgpas];
 
-    for (int i = 0; i < semester - cgpas.length + 2; i++) {
-      //
+    for (int i = 0; i < semester - cgpas.length + 1; i++) {
       List cols = ["Semester", "CGPA"];
-
       List<List> data = [
         cols,
         for (int i = 0; i < tempCGPA.length; i++) [i, tempCGPA[i]],
@@ -246,11 +267,15 @@ class CsvUtils {
         [
           unitsPerSem[i],
           pxuPerSem[i],
-          gpas[i],
-          cgpas[i],
+          gpas
+              .map((e) => double.parse(e.toString()).toStringAsFixed(2))
+              .toList()[i],
+          cgpas
+              .map((e) => double.parse(e.toString()).toStringAsFixed(2))
+              .toList()[i],
         ],
     ];
-    csv = data;
+    cleanCsv = data;
 
     // miu.DataFrame
     final model = LinearRegressor(
@@ -260,7 +285,7 @@ class CsvUtils {
       ),
       "CGPA",
     );
-
+    
     // Can't work because there is no test data
     final error = model.assess(
       DataFrame(
@@ -325,7 +350,6 @@ class CsvUtils {
   //   final model = LinearRegressor.fromJson(encodedModel);
   //   final unlabelledData = await fromJson('some_unlabelled_data.json');
   //   final prediction = model.predict(unlabelledData);
-
   //   print(prediction.header);
   //   print(prediction.rows);
   // }

@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:lin_reg_proj/ui/scatter_plot.dart';
 
 class GraphPage extends StatelessWidget {
+  final bool is10th;
   final List<CourseGPAs> csv;
-  const GraphPage({super.key, required this.csv});
+  const GraphPage({super.key, required this.csv, required this.is10th});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class GraphPage extends StatelessWidget {
             id: 'CGPAs plot',
             // Providing a color function is optional.
             colorFn: (CourseGPAs cgpa, _) {
-              return MaterialPalette.green.shadeDefault;
+              return MaterialPalette.blue.shadeDefault;
             },
             domainFn: (CourseGPAs cgpa, _) => cgpa.semester,
             measureFn: (CourseGPAs cgpa, _) => cgpa.cgpa,
@@ -28,10 +29,10 @@ class GraphPage extends StatelessWidget {
           ),
           Series<CourseGPAs, int>(
             id: 'Reg Line',
-            colorFn: (_, __) => MaterialPalette.purple.shadeDefault,
+            colorFn: (_, __) => MaterialPalette.red.shadeDefault,
             domainFn: (CourseGPAs cgpa, _) => cgpa.semester,
             measureFn: (CourseGPAs cgpa, _) => cgpa.cgpa,
-            data: [csv.first, csv.last],
+            data: is10th ? [csv.first, csv.last] : [csv.first, csv.last],
           )..setAttribute(rendererIdKey, 'customLine'),
         ],
       ),

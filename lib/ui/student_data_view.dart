@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lin_reg_proj/graph_page.dart';
+import 'package:lin_reg_proj/ui/graph_page.dart';
 import 'package:lin_reg_proj/utils/csv_utils.dart';
 
 class StudentDataView extends StatefulWidget {
@@ -34,7 +34,10 @@ class _StudentDataViewState extends State<StudentDataView> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => GraphPage(csv: csv.cgpasplot),
+                  builder: (_) => GraphPage(
+                    csv: csv.cgpasplot,
+                    is10th: widget.is10thStudent,
+                  ),
                 ),
               );
             },
@@ -42,63 +45,134 @@ class _StudentDataViewState extends State<StudentDataView> {
           )
         ],
       ),
-      body: SingleChildScrollView(
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: csv.csv.isEmpty
-              ? const CircularProgressIndicator()
-              : DataTable(
-                  columns: [
-                    const DataColumn(
-                      label: Flexible(
-                        child: Center(
-                          child: Text(
-                            "S/N",
-                          ),
-                        ),
-                      ),
-                    ),
-                    ...csv.csv[0].map(
-                      (item) => DataColumn(
-                        label: Flexible(
-                          child: Center(
-                            child: Text(
-                              item.toString(),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                  rows: csv.csv
-                      .skip(1)
-                      .map(
-                        (csvrow) => DataRow(
-                          cells: [
-                            DataCell(
-                              Center(
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: csv.csv.isEmpty
+                    ? const CircularProgressIndicator()
+                    : DataTable(
+                        columns: [
+                          const DataColumn(
+                            label: Flexible(
+                              child: Center(
                                 child: Text(
-                                  csv.csv.indexOf(csvrow).toString(),
+                                  "S/N",
                                 ),
                               ),
                             ),
-                            ...csvrow.map(
-                              (csvItem) => DataCell(
-                                Center(
+                          ),
+                          ...csv.csv[0].map(
+                            (item) => DataColumn(
+                              label: Flexible(
+                                child: Center(
                                   child: Text(
-                                    csvItem.toString(),
+                                    item.toString(),
                                   ),
                                 ),
                               ),
                             ),
-                          ],
-                        ),
-                      )
-                      .toList(),
-                ),
-        ),
+                          ),
+                        ],
+                        rows: csv.csv
+                            .skip(1)
+                            .map(
+                              (csvrow) => DataRow(
+                                cells: [
+                                  DataCell(
+                                    Center(
+                                      child: Text(
+                                        csv.csv.indexOf(csvrow).toString(),
+                                      ),
+                                    ),
+                                  ),
+                                  ...csvrow.map(
+                                    (csvItem) => DataCell(
+                                      Center(
+                                        child: Text(
+                                          csvItem.toString(),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                            .toList(),
+                      ),
+              ),
+            ),
+          ),
+          // const SizedBox(height: 20),
+          Text(
+            "Cleaned Data".toUpperCase(),
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 20),
+          Expanded(
+            child: SingleChildScrollView(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: csv.cleanCsv.isEmpty
+                    ? const CircularProgressIndicator()
+                    : DataTable(
+                        columns: [
+                          const DataColumn(
+                            label: Flexible(
+                              child: Center(
+                                child: Text(
+                                  "S/N",
+                                ),
+                              ),
+                            ),
+                          ),
+                          ...csv.cleanCsv[0].map(
+                            (item) => DataColumn(
+                              label: Flexible(
+                                child: Center(
+                                  child: Text(
+                                    item.toString(),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                        rows: csv.cleanCsv
+                            .skip(1)
+                            .map(
+                              (csvrow) => DataRow(
+                                cells: [
+                                  DataCell(
+                                    Center(
+                                      child: Text(
+                                        csv.cleanCsv.indexOf(csvrow).toString(),
+                                      ),
+                                    ),
+                                  ),
+                                  ...csvrow.map(
+                                    (csvItem) => DataCell(
+                                      Center(
+                                        child: Text(
+                                          csvItem.toString(),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                            .toList(),
+                      ),
+              ),
+            ),
+          ),
+        ],
       ),
-     
     );
   }
 }
