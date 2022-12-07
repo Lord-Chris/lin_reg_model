@@ -1,7 +1,6 @@
 /// Example of a combo scatter plot chart with a second series rendered as a
 /// line.
 import 'package:charts_flutter/flutter.dart' as charts;
-import 'package:charts_flutter_new/flutter.dart';
 import 'package:flutter/material.dart';
 
 class ScatterPlotComboLineChart extends StatelessWidget {

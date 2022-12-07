@@ -39,7 +39,7 @@ class CsvUtils {
 
   List<List<dynamic>> cleanUpDataSet(List<List<dynamic>> data) {
     for (int i = 0; i < data[0].length; i++) {
-      if (data[1][i].toString() .isEmpty) {
+      if (data[1][i].toString().isEmpty) {
         data[0].removeAt(i);
         data[1].removeAt(i);
       }
@@ -83,7 +83,6 @@ class CsvUtils {
     final index20 = [19, 20, 22, 31, 32, 40, 49, 54].reversed.toList();
     final courses = is10th ? index10 : index20;
     for (int i = 0; i < courses.length; i++) {
-      print(data[0].elementAt(courses[i]));
       data[0].removeAt(courses[i]);
       data[1].removeAt(courses[i]);
     }
@@ -156,18 +155,14 @@ class CsvUtils {
     courses = tempData[0];
     grades = tempData[1];
 
-    // print([courses.length, grades.length]);
-
     // Get the units from the courses
     units = getCourseUnits(courses);
-    // print([courses.length, grades.length]);
 
     // Get the semester
     semester = getSemesters(is10th);
 
     // Get the points
     points = getPoints(grades);
-    // csv.add(points);
 
     // Calculate gpa
 
@@ -207,11 +202,10 @@ class CsvUtils {
         cgpas.add(gpas[0]);
       } else {
         cgpas.add(
-          (gpas.take(i + 1).fold(0.0, (p, c) => (p as double) + (c as double))) / (i + 1),
+          (gpas.take(i + 1).fold(0.0, (p, c) => (p) + (c as double))) / (i + 1),
         );
       }
     }
-    print(cgpas);
 
     // Compile Result
     csv = [
@@ -253,14 +247,6 @@ class CsvUtils {
             [...cols]..removeAt(0),
             [0],
             [tempCGPA.last],
-
-            // for (int i = 0; i < 1; i++)
-            //   [
-            //     // unitsPerSem[i],
-            //     // pxuPerSem[i],
-            //     // gpas[i],
-            //     cgpas[i],
-            //   ]
           ],
           headerExists: true,
         ),
@@ -270,8 +256,8 @@ class CsvUtils {
 
       tempCGPA.add(double.parse(stringRes));
     }
-    print("object");
-    print(tempCGPA);
+    // print("object");
+    // print(tempCGPA);
     return tempCGPA.last;
   }
 
@@ -299,36 +285,32 @@ class CsvUtils {
     cleanCsv = data;
 
     // miu.DataFrame
-    final model = LinearRegressor(
-      DataFrame(
-        data,
-        headerExists: true,
-      ),
-      "CGPA",
-    );
-    
+    // final model = LinearRegressor(
+    //   DataFrame(
+    //     data,
+    //     headerExists: true,
+    //   ),
+    //   "CGPA",
+    // );
     // Can't work because there is no test data
-    final error = model.assess(
-      DataFrame(
-        [
-          cols,
-          for (int i = 0; i < 1; i++)
-            [
-              unitsPerSem[i],
-              pxuPerSem[i],
-              gpas[i],
-              cgpas[i],
-            ],
-        ],
-        headerExists: true,
-      ),
-      MetricType.mape,
-    );
-
-    print("Error from model: $error");
-
-    await model.saveAsJson('housing_model.json');
-
+    // final error = model.assess(
+    //   DataFrame(
+    //     [
+    //       cols,
+    //       for (int i = 0; i < 1; i++)
+    //         [
+    //           unitsPerSem[i],
+    //           pxuPerSem[i],
+    //           gpas[i],
+    //           cgpas[i],
+    //         ],
+    //     ],
+    //     headerExists: true,
+    //   ),
+    //   MetricType.mape,
+    // );
+    // print("Error from model: $error");
+    // await model.saveAsJson('housing_model.json');
     // print(DataFrame(
     //   [
     //     [...cols]..removeAt(0),
@@ -342,38 +324,26 @@ class CsvUtils {
     //   ],
     //   headerExists: true,
     // ).toJson());
-
-    final dataframe = model.predict(
-      DataFrame(
-        [
-          [...cols]..removeAt(0),
-          for (int i = 0; i < 1; i++)
-            [
-              unitsPerSem[i],
-              pxuPerSem[i],
-              gpas[i],
-              cgpas[i],
-            ]
-        ],
-        headerExists: true,
-        // header: cols.map((e) => e.toString()),
-        // columnNames: cols.map((e) => e.toString()),
-      ),
-    );
-
-    print(dataframe.header);
-    print(dataframe.rows);
+    // final dataframe = model.predict(
+    //   DataFrame(
+    //     [
+    //       [...cols]..removeAt(0),
+    //       for (int i = 0; i < 1; i++)
+    //         [
+    //           unitsPerSem[i],
+    //           pxuPerSem[i],
+    //           gpas[i],
+    //           cgpas[i],
+    //         ]
+    //     ],
+    //     headerExists: true,
+    //     // header: cols.map((e) => e.toString()),
+    //     // columnNames: cols.map((e) => e.toString()),
+    //   ),
+    // );
+    // print(dataframe.header);
+    // print(dataframe.rows);
   }
-
-  // void predictModel() async {
-  //   final file = File('housing_model.json');
-  //   final encodedModel = await file.readAsString();
-  //   final model = LinearRegressor.fromJson(encodedModel);
-  //   final unlabelledData = await fromJson('some_unlabelled_data.json');
-  //   final prediction = model.predict(unlabelledData);
-  //   print(prediction.header);
-  //   print(prediction.rows);
-  // }
 
   List<List<dynamic>> get data10 => cleanUpData([dataset[0], dataset[10]]);
   List<List<dynamic>> get data20 => cleanUpData([dataset[0], dataset[20]]);

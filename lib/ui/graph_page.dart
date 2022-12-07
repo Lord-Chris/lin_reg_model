@@ -1,4 +1,4 @@
-import 'package:charts_flutter_new/flutter.dart';
+import 'package:charts_flutter/flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:lin_reg_proj/ui/scatter_plot.dart';
 
