@@ -8,6 +8,7 @@ import '../ui/scatter_plot.dart';
 class CsvUtils {
   CsvUtils._();
   static CsvUtils instance = CsvUtils._();
+
   List<List<dynamic>> dataset = [];
   List<List<dynamic>> csv = [];
   List<List<dynamic>> cleanCsv = [];
@@ -34,6 +35,26 @@ class CsvUtils {
     grades = dataset[10];
 
     csv = [courses, grades];
+  }
+
+  List<List<dynamic>> cleanUpDataSet(List<List<dynamic>> data) {
+    for (int i = 0; i < data[0].length; i++) {
+      if (data[1][i].toString() .isEmpty) {
+        data[0].removeAt(i);
+        data[1].removeAt(i);
+      }
+    }
+    for (int i = 0; i < data[1].length; i++) {
+      if (data[1][i] is! int || int.tryParse((data[1][i]).toString()) == null) {
+        data[0].removeAt(i);
+        data[1].removeAt(i);
+      }
+    }
+
+    data[0].removeLast();
+    data[1].removeLast();
+
+    return data;
   }
 
   List<List<dynamic>> cleanUpData(List<List<dynamic>> data) {
@@ -146,7 +167,7 @@ class CsvUtils {
 
     // Get the points
     points = getPoints(grades);
-    csv.add(points);
+    // csv.add(points);
 
     // Calculate gpa
 
@@ -186,7 +207,7 @@ class CsvUtils {
         cgpas.add(gpas[0]);
       } else {
         cgpas.add(
-          (gpas.take(i + 1).fold(0.0, (p, c) => p + (c as double))) / (i + 1),
+          (gpas.take(i + 1).fold(0.0, (p, c) => (p as double) + (c as double))) / (i + 1),
         );
       }
     }

@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:lin_reg_proj/ui/graph_page.dart';
 import 'package:lin_reg_proj/utils/csv_utils.dart';
@@ -12,7 +13,7 @@ class StudentDataView extends StatefulWidget {
 
 class _StudentDataViewState extends State<StudentDataView> {
   final csv = CsvUtils.instance;
-
+  final controller = ScrollController();
   @override
   void initState() {
     super.initState();
@@ -49,59 +50,68 @@ class _StudentDataViewState extends State<StudentDataView> {
         children: [
           Expanded(
             child: SingleChildScrollView(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: csv.csv.isEmpty
-                    ? const CircularProgressIndicator()
-                    : DataTable(
-                        columns: [
-                          const DataColumn(
-                            label: Flexible(
-                              child: Center(
-                                child: Text(
-                                  "S/N",
-                                ),
-                              ),
-                            ),
-                          ),
-                          ...csv.csv[0].map(
-                            (item) => DataColumn(
+              controller: controller,
+              child: ScrollConfiguration(
+                behavior: ScrollConfiguration.of(context).copyWith(
+                  dragDevices: {
+                    PointerDeviceKind.mouse,
+                    PointerDeviceKind.touch,
+                  },
+                ),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: csv.csv.isEmpty
+                      ? const CircularProgressIndicator()
+                      : DataTable(
+                          columns: [
+                            const DataColumn(
                               label: Flexible(
                                 child: Center(
                                   child: Text(
-                                    item.toString(),
+                                    "S/N",
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
-                        rows: csv.csv
-                            .skip(1)
-                            .map(
-                              (csvrow) => DataRow(
-                                cells: [
-                                  DataCell(
-                                    Center(
-                                      child: Text(
-                                        csv.csv.indexOf(csvrow).toString(),
-                                      ),
+                            ...csv.csv[0].map(
+                              (item) => DataColumn(
+                                label: Flexible(
+                                  child: Center(
+                                    child: Text(
+                                      item.toString(),
                                     ),
                                   ),
-                                  ...csvrow.map(
-                                    (csvItem) => DataCell(
+                                ),
+                              ),
+                            ),
+                          ],
+                          rows: csv.csv
+                              .skip(1)
+                              .map(
+                                (csvrow) => DataRow(
+                                  cells: [
+                                    DataCell(
                                       Center(
                                         child: Text(
-                                          csvItem.toString(),
+                                          csv.csv.indexOf(csvrow).toString(),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            )
-                            .toList(),
-                      ),
+                                    ...csvrow.map(
+                                      (csvItem) => DataCell(
+                                        Center(
+                                          child: Text(
+                                            csvItem.toString(),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                              .toList(),
+                        ),
+                ),
               ),
             ),
           ),
@@ -115,59 +125,70 @@ class _StudentDataViewState extends State<StudentDataView> {
           const SizedBox(height: 20),
           Expanded(
             child: SingleChildScrollView(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: csv.cleanCsv.isEmpty
-                    ? const CircularProgressIndicator()
-                    : DataTable(
-                        columns: [
-                          const DataColumn(
-                            label: Flexible(
-                              child: Center(
-                                child: Text(
-                                  "S/N",
-                                ),
-                              ),
-                            ),
-                          ),
-                          ...csv.cleanCsv[0].map(
-                            (item) => DataColumn(
+              controller: ScrollController(),
+              child: ScrollConfiguration(
+                behavior: ScrollConfiguration.of(context).copyWith(
+                  dragDevices: {
+                    PointerDeviceKind.mouse,
+                    PointerDeviceKind.touch,
+                  },
+                ),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: csv.cleanCsv.isEmpty
+                      ? const CircularProgressIndicator()
+                      : DataTable(
+                          columns: [
+                            const DataColumn(
                               label: Flexible(
                                 child: Center(
                                   child: Text(
-                                    item.toString(),
+                                    "S/N",
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
-                        rows: csv.cleanCsv
-                            .skip(1)
-                            .map(
-                              (csvrow) => DataRow(
-                                cells: [
-                                  DataCell(
-                                    Center(
-                                      child: Text(
-                                        csv.cleanCsv.indexOf(csvrow).toString(),
-                                      ),
+                            ...csv.cleanCsv[0].map(
+                              (item) => DataColumn(
+                                label: Flexible(
+                                  child: Center(
+                                    child: Text(
+                                      item.toString(),
                                     ),
                                   ),
-                                  ...csvrow.map(
-                                    (csvItem) => DataCell(
+                                ),
+                              ),
+                            ),
+                          ],
+                          rows: csv.cleanCsv
+                              .skip(1)
+                              .map(
+                                (csvrow) => DataRow(
+                                  cells: [
+                                    DataCell(
                                       Center(
                                         child: Text(
-                                          csvItem.toString(),
+                                          csv.cleanCsv
+                                              .indexOf(csvrow)
+                                              .toString(),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            )
-                            .toList(),
-                      ),
+                                    ...csvrow.map(
+                                      (csvItem) => DataCell(
+                                        Center(
+                                          child: Text(
+                                            csvItem.toString(),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                              .toList(),
+                        ),
+                ),
               ),
             ),
           ),

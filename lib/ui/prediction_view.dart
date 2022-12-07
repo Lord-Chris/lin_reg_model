@@ -49,7 +49,7 @@ class _PredictionViewState extends State<PredictionView> {
                           child: Text((i + 1).toString()),
                         )
                     ],
-                    onChanged: (value) {
+                    onChanged: (int ?value) {
                       semester = value;
                     },
                     value: semester,
@@ -78,7 +78,7 @@ class _PredictionViewState extends State<PredictionView> {
                         child: Text("20th Student Model"),
                       )
                     ],
-                    onChanged: (value) {
+                    onChanged: (bool? value) {
                       is10thStudent = value ?? false;
                     },
                     value: is10thStudent,

@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:lin_reg_proj/utils/csv_utils.dart';
 
@@ -45,56 +46,65 @@ class _DataSetViewState extends State<DataSetView> {
           );
         }
         return SingleChildScrollView(
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: DataTable(
-              columns: [
-                const DataColumn(
-                  label: Flexible(
-                    child: Center(
-                      child: Text(
-                        "S/N",
-                      ),
-                    ),
-                  ),
-                ),
-                ...csv.dataset[0].map(
-                  (item) => DataColumn(
+          controller: ScrollController(),
+          child: ScrollConfiguration(
+            behavior: ScrollConfiguration.of(context).copyWith(
+              dragDevices: {
+                PointerDeviceKind.mouse,
+                PointerDeviceKind.touch,
+              },
+            ),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: DataTable(
+                columns: [
+                  const DataColumn(
                     label: Flexible(
                       child: Center(
                         child: Text(
-                          item.toString(),
+                          "S/N",
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
-              rows: csv.dataset
-                  .skip(1)
-                  .map(
-                    (csvrow) => DataRow(
-                      cells: [
-                        DataCell(
-                          Center(
-                            child: Text(
-                              csv.dataset.indexOf(csvrow).toString(),
-                            ),
+                  ...csv.dataset[0].map(
+                    (item) => DataColumn(
+                      label: Flexible(
+                        child: Center(
+                          child: Text(
+                            item.toString(),
                           ),
                         ),
-                        ...csvrow.map(
-                          (csvItem) => DataCell(
+                      ),
+                    ),
+                  ),
+                ],
+                rows: csv.dataset
+                    .skip(1)
+                    .map(
+                      (csvrow) => DataRow(
+                        cells: [
+                          DataCell(
                             Center(
                               child: Text(
-                                csvItem.toString(),
+                                csv.dataset.indexOf(csvrow).toString(),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  )
-                  .toList(),
+                          ...csvrow.map(
+                            (csvItem) => DataCell(
+                              Center(
+                                child: Text(
+                                  csvItem.toString(),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                    .toList(),
+              ),
             ),
           ),
         );
